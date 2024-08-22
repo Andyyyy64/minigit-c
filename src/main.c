@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "repo.h"
+#include "commit.h"
+#include "object.h"
+
 int main(int argc, char *argv[]) {
     if (argc < 2) { // if no command is given, print usage
         fprintf(stderr, "Usage %s <command> [options]\n", argv[0]);
@@ -22,6 +26,16 @@ int main(int argc, char *argv[]) {
         // hash-object command
     } else if(strcmp(argv[1], "init") == 0)  {
         // repo init command
+        const char *path = ".";
+        if(argc > 2) {
+            path = argv[2];
+        }
+        if(repo_create(path, 0) == NULL) {
+            fprintf(stderr, "Failed to initialize repository\n");
+            return 1;
+        } else {
+            printf("Initialized empty minigit-c repository in %s\n", path);
+        }
     } else if(strcmp(argv[1], "log") == 0) {
         // log command
     } else if(strcmp(argv[1], "ls-files") == 0) {

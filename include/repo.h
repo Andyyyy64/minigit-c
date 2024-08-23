@@ -10,6 +10,7 @@ typedef struct {
 GitRepository *repo_create(const char *path, int force);
 int repo_dir(GitRepository *repo, const char *subpath, int makedir);
 int repo_file(GitRepository *repo, const char *subpath, const char *content, int makedir);
+GitRepository *repo_find(const char *path, int required);
 void repo_free(GitRepository *repo);
 
 #endif

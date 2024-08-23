@@ -14,6 +14,7 @@ typedef struct {
 GitObject *object_read(GitRepository *repo, const char *sha);
 char *object_write(GitObject *object, GitRepository *repo);
 
+
 #endif
 
 

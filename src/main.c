@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "repo.h"
+#include "command.h"
 
 int main(int argc, char *argv[]) {
     if (argc < 2) { // if no command is given, print usage

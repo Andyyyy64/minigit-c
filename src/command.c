@@ -6,6 +6,7 @@
 #include <errno.h>
 // for access to the file system
 #include <unistd.h>
+#include <openssl/sha.h>
 
 #include "repo.h"
 #include "command.h"
@@ -42,7 +43,7 @@ GitRepository *repo_create(const char *path, int force) {
 
     // check if the directory already exists
     if(!force && !repo_dir(repo, "", 1)) {
-        fprintf(stderr, "Not a git repository %s\n", repo->gitdir);
+        fprintf(stderr, "Not a minigit-c repository %s\n", repo->gitdir);
         repo_free(repo);
         return NULL;
     }
@@ -87,4 +88,33 @@ void cat_file(GitRepository *repo, GitObject *object, const char *fmt) {
     // output the object data to standard output
     fwrite(obj->data, 1, obj->size, stdout);
     object_free(obj);
+}
+
+void cmd_hash_object(const char *path, const char *fmt, int write) {
+    GitRepository *repo = malloc(sizeof(GitRepository));
+    if(write) {
+        repo = repo_find(".", 1);
+        if(repo == NULL) {
+            fprintf(stderr, "Not a minigit-c repository found\n");
+            return;
+        }
+    } else {
+        repo = NULL;
+    }
+
+    FILE *f = fopen(path, "rb");
+    if(f == NULL) {
+        fprintf(stderr, "Error opening file %s: %s\n", path, strerror(errno));
+        return;
+    }
+    const char *sha = object_hash(f, fmt, repo);
+    if(sha) {
+        printf("%s\n", sha);
+        free(sha);
+    } else {
+        fprintf(stderr, "Error hashing object\n");
+    }
+
+    fclose(f);
+    if(repo) repo_free(repo);
 }

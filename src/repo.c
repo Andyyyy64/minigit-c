@@ -91,7 +91,7 @@ GitRepository *repo_find(const char *path, int required) {
     // if the parent is the same as the full path, we are at the root
     if(strcmp(parent, full_path) == 0) {
         if(required) {
-            fprintf(stderr, "No git directory\n");
+            fprintf(stderr, "No minigit-c directory\n");
             exit(1);
         } else {
             return NULL;

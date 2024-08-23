@@ -7,6 +7,6 @@
 
 GitRepository *repo_create(const char *path, int force);
 void cat_file(GitRepository *repo, GitObject *object, const char *fmt);
-
+void cmd_hash_object(const char *path, const char *fmt, int write);
 
 #endif

@@ -7,6 +7,7 @@
 #include <errno.h>
 
 #include "object.h"
+#include "blob.h"
 
 GitObject *object_read(GitRepository *repo, const char *sha) {
     char path[512];
@@ -203,6 +204,51 @@ char *object_write(GitObject *object, GitRepository *repo) {
     return sha_str;
 }
 
+char *object_hash(FILE *file, const char *fmt, GitRepository *repo) {
+    // read file
+    fseek(file, 0, SEEK_END);
+    long fsize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    char *data = malloc(fsize);
+    if(data == NULL) {
+        fprintf(stderr, "Error allocating memory for data\n");
+        return NULL;
+    }
+
+    fread(data, 1, fsize, file);
+
+    GitObject *obj = NULL;
+    // create object based on the format
+    if(strcmp(fmt, "blob") == 0) {
+        obj = (GitObject *)blob_create(data, fsize);
+    } else if(strcmp(fmt, "commit") == 0) {
+
+    } else if(strcmp(fmt, "tag") == 0) {
+
+    } else if(strcmp(fmt, "tree") == 0) {
+
+    } else {
+        fprintf(stderr, "Unknown object type %s\n", fmt);
+        free(data);
+        return NULL;
+    }
+
+    if(obj == NULL) {
+        fprintf(stderr, "Error creating object\n");
+        free(data);
+        return NULL;
+    }
+
+
+    // write object
+    char *sha = object_write(obj, repo);
+
+    object_free(obj);
+    free(data);
+
+    return sha;
+}
 char *object_find(GitRepository *repo, const char *name, const char *fmt, int follow) {
     return name;
 }

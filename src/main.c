@@ -11,7 +11,6 @@ int main(int argc, char *argv[]) {
 
     if(strcmp(argv[1], "add") == 0) {
         // add command
-        printf("Add command\n");
     } else if(strcmp(argv[1], "cat-file") == 0) {
         // cat-file command
         if(argc < 4) {
@@ -27,7 +26,7 @@ int main(int argc, char *argv[]) {
 
         GitRepository *repo = repo_find(".", 1);
         if(repo == NULL) {
-            fprintf(stderr, "Not a git repository found\n");
+            fprintf(stderr, "Not a minigit-c repository found\n");
             return 1;
         }
 
@@ -42,6 +41,20 @@ int main(int argc, char *argv[]) {
         // commit command
     } else if(strcmp(argv[1], "hash-object") == 0) {
         // hash-object command
+        if(argc < 5) {
+            fprintf(stderr, "Usage: %s hash-object <-w> <-t TYPE> <file>\n", argv[0]);
+            return 1;
+        }
+        int write = 0;
+        const char *type = argv[3];
+        const char *path = argv[4];
+
+        if(strcmp(argv[2], "-w") == 0) {
+            write = 1;
+        }
+        
+        cmd_hash_object(path, type, write);
+
     } else if(strcmp(argv[1], "init") == 0)  {
         // repo init command
         const char *path = ".";

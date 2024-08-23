@@ -14,6 +14,26 @@ int main(int argc, char *argv[]) {
         printf("Add command\n");
     } else if(strcmp(argv[1], "cat-file") == 0) {
         // cat-file command
+        if(argc < 4) {
+            fprintf(stderr, "Usage: %s cat-file <type> <object>\n", argv[0]);
+            return 1;
+        }
+        const char *type = argv[2];
+        if(strcmp(type, "blob") != 0 && strcmp(type, "commit") != 0 && strcmp(type, "tag") != 0 && strcmp(type, "tree") != 0) {
+            fprintf(stderr, "Unknown type %s\n", type);
+            return 1;
+        }
+        const char *object = argv[3];
+
+        GitRepository *repo = repo_find(".", 1);
+        if(repo == NULL) {
+            fprintf(stderr, "Not a git repository found\n");
+            return 1;
+        }
+
+        cat_file(repo, object, type);
+        repo_free(repo);
+
     } else if(strcmp(argv[1], "check-ignore") == 0) {
         // check-ignore command
     } else if(strcmp(argv[1], "checkout") == 0) {

@@ -202,3 +202,15 @@ char *object_write(GitObject *object, GitRepository *repo) {
     free(result);
     return sha_str;
 }
+
+char *object_find(GitRepository *repo, const char *name, const char *fmt, int follow) {
+    return name;
+}
+
+void object_free(GitObject *object) {
+    if(object != NULL) {
+        free(object->data);
+        free(object->fmt);
+        free(object);
+    }
+}

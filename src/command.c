@@ -69,3 +69,22 @@ GitRepository *repo_create(const char *path, int force) {
 
     return repo;
 }
+
+void cat_file(GitRepository *repo, GitObject *object, const char *fmt) {
+    GitObject *obj = malloc(sizeof(GitObject));
+    obj = object_read(repo, object_find(repo, object, fmt, 1));
+    if(obj == NULL) {
+        fprintf(stderr, "Error reading object\n");
+        return;
+    }
+
+    // compare if is the same type
+    if(strcmp(obj->fmt, fmt) != 0) {
+        fprintf(stderr, "object type mismatch, exprected %s, got %s\n", fmt, obj->fmt);
+        object_free(obj);
+    }
+
+    // output the object data to standard output
+    fwrite(obj->data, 1, obj->size, stdout);
+    object_free(obj);
+}

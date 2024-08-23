@@ -2,8 +2,6 @@
 #include <stdlib.h>
 
 #include "repo.h"
-#include "commit.h"
-#include "object.h"
 
 int main(int argc, char *argv[]) {
     if (argc < 2) { // if no command is given, print usage

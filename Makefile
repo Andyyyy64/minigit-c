@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -std=c11
 
 # soruce files
-SRCS = src/*.c
+SRCS = $(wildcard src/*.c)
 
 # header files
 INCLUDES = -Iinclude

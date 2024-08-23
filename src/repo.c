@@ -17,8 +17,16 @@ GitRepository *repo_create(const char *path, int force) {
     }
 
     // copy the path to the worktree
-    repo->worktree = strdup(path);
+    repo->worktree = malloc(strlen(path) + 1);
+    if(repo->worktree == NULL) {
+        fprintf(stderr, "Error allocating memory for directory\n");
+        return 0;
+    }
+    strcpy(repo->worktree, path);
+    
+    // allocate memory for the gitdir path
     repo->gitdir = malloc(strlen(path) + strlen("./minigit-c") + 1);
+
     if(repo->gitdir == NULL) {
         fprintf(stderr, "Error allocating memory for gitdir\n");
         free(repo->worktree);
@@ -39,6 +47,7 @@ GitRepository *repo_create(const char *path, int force) {
     // create the directories
     if(!repo_dir(repo, "branches", 1)) return NULL;
     if(!repo_dir(repo, "objects", 1)) return NULL;
+    if(!repo_dir(repo, "refs", 1)) return NULL;
     if(!repo_dir(repo, "refs/tags", 1)) return NULL;
     if(!repo_dir(repo, "refs/heads", 1)) return NULL;
 
@@ -61,6 +70,8 @@ GitRepository *repo_create(const char *path, int force) {
 // create or get a directory in the repository
 int repo_dir(GitRepository *repo, const char *subpath, int makedir) {
     char path[512];
+    // make the full path for the directory
+    snprintf(path, sizeof(path), "%s/%s", repo->gitdir, subpath);
     if(makedir) {
         if(mkdir(path, 0775) != 0) {
             // if the error is not because the directory already exists
@@ -70,21 +81,25 @@ int repo_dir(GitRepository *repo, const char *subpath, int makedir) {
             }
         }
     }
-
     return 1;
 }
 
 // create or get a file in the repository, if needed create the directory
 int repo_file(GitRepository *repo, const char *subpath, const char *content, int makedir) {
     char path[512];
-    snprintf(path, sizeof(path), "%s/%s", repo->gitdir, path);
-
+    snprintf(path, sizeof(path), "%s/%s", repo->gitdir, subpath);
+    
     if(makedir) {
         // copy the path to the directory
-        char *dir = strdup(path);
+        char *dir = malloc(strlen(path) + 1);
+        if(dir == NULL) {
+            fprintf(stderr, "Error allocating memory for directory\n");
+            return 0;
+        }
+        strcpy(dir, path);
         // get only the directory part of the path
         char *slash = strrchr(dir, '/');
-        if(slash == NULL) {
+        if(slash != NULL) {
             *slash = '\0';
             if(mkdir(dir, 0755) != 0 && errno != EEXIST) {
                 fprintf(stderr, "Error creating directory %s: %s\n", dir, strerror(errno));
@@ -114,8 +129,7 @@ void repo_free(GitRepository *repo) {
     if(repo) {
         free(repo->worktree);
         free(repo->gitdir);
-        free(repo->conf);
+        if(repo->conf) free(repo->conf);
         free(repo);
     }
 }
-

@@ -105,9 +105,9 @@ GitRepository *repo_find(const char *path, int required) {
 // free all the memory allocated for the repository
 void repo_free(GitRepository *repo) {
     if(repo) {
-        free(repo->worktree);
-        free(repo->gitdir);
+        if(repo->worktree) free(repo->worktree);
+        if(repo->gitdir) free(repo->gitdir);
         if(repo->conf) free(repo->conf);
-        free(repo);
+        if(repo) free(repo);
     }
 }

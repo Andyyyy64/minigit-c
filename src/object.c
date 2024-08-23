@@ -127,10 +127,10 @@ char *object_write(GitObject *object, GitRepository *repo) {
     // add header
     size_t header_size = strlen(object->fmt) + 1 + snprintf(NULL, 0, "%zu", object->size) + 1;
     size_t total_size = header_size + object->size;
+
     char *result = malloc(total_size);
     if(result == NULL) {
         fprintf(stderr, "Error allocating memory for result\n");
-        free(result);
         return NULL;
     }
 
@@ -216,7 +216,11 @@ char *object_hash(FILE *file, const char *fmt, GitRepository *repo) {
         return NULL;
     }
 
-    fread(data, 1, fsize, file);
+    if(fread(data, 1, fsize, file) != fsize) {
+        fprintf(stderr, "Error reading file\n");
+        free(data);
+        return NULL;
+    }
 
     GitObject *obj = NULL;
     // create object based on the format
@@ -240,7 +244,6 @@ char *object_hash(FILE *file, const char *fmt, GitRepository *repo) {
         return NULL;
     }
 
-
     // write object
     char *sha = object_write(obj, repo);
 
@@ -254,9 +257,8 @@ char *object_find(GitRepository *repo, const char *name, const char *fmt, int fo
 }
 
 void object_free(GitObject *object) {
-    if(object != NULL) {
-        free(object->data);
-        free(object->fmt);
-        free(object);
+    if(object) {
+        if(object->data) free(object->data);
     }
+    free(object);
 }

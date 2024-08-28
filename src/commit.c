@@ -13,7 +13,7 @@ GitCommit *commit_read(GitRepository *repo, const char *sha) {
     }
     printf("Object %s read\n", sha);
     // check if object type is 'commit'
-    if(memcmp(obj->fmt, "commit", strlen(obj->fmt)) != 0) {
+    if(strcmp(obj->fmt, "commit") != 0) {
         fprintf(stderr, "Error object %s is not a commit\n", sha);
         object_free(obj);
         return NULL;

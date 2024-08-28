@@ -18,11 +18,9 @@ typedef struct {
 } kvlm;
 
 kvlm *kvlm_init();
-
 kvlm *kvlm_read(const char *raw, size_t length);
-
 char *kvlm_write(const kvlm *kvlm_data, size_t *length);
-
+char *kvlm_get(kvlm *kvlm_data, const char *key);
 void kvlm_free(kvlm *kvlm_data);
 
 #endif

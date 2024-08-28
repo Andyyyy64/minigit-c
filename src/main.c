@@ -67,8 +67,24 @@ int main(int argc, char *argv[]) {
         } else {
             printf("Initialized empty minigit-c repository in %s\n", path);
         }
+
     } else if(strcmp(argv[1], "log") == 0) {
         // log command
+        const char *sha = "HEAD";
+        // if the user provides a sha
+        if(argc > 2) {
+            sha = argv[2];
+        }
+
+        GitRepository *repo = repo_find(".", 1);
+        if(repo == NULL) {
+            fprintf(stderr, "Not a minigit-c repository found\n");
+            return 1;
+        }
+
+        // print the log of givin or head sha's commit
+        cmd_log(repo, sha);
+
     } else if(strcmp(argv[1], "ls-files") == 0) {
         // ls-files command
     } else if(strcmp(argv[1], "ls-tree") == 0) {

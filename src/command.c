@@ -9,6 +9,8 @@
 #include <openssl/sha.h>
 
 #include "repo.h"
+#include "commit.h"
+
 #include "command.h"
 
 // create a new minigit-c repository
@@ -117,4 +119,26 @@ void cmd_hash_object(const char *path, const char *fmt, int write) {
 
     fclose(f);
     if(repo) repo_free(repo);
+}
+
+void cmd_log(GitRepository *repo, const char *sha) {
+    GitCommit *commit = commit_read(repo, sha);
+    if(commit == NULL) {
+        fprintf(stderr, "Error reading commit %s\n", sha);
+        return NULL;
+    }
+    printf("commit %s\n", sha);
+    // print author and message
+    if(commit->kvlm_data) {
+        printf("Author: %s\n", kvlm_get(commit->kvlm_data, "author"));
+        printf("\n%s\n", kvlm_get(commit->kvlm_data, NULL)); // commit message
+    }
+    // if the commit has a parent, print the parent commit
+    char *parent = kvlm_get(commit->kvlm_data, "parent");
+    if(parent) {
+        printf("\n");
+        cmd_log(repo, parent);
+    }
+
+    commit_free(commit);
 }

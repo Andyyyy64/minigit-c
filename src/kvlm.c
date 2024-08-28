@@ -187,6 +187,19 @@ char *kvlm_write(const kvlm *kvlm_data, size_t *length) {
     return raw;
 }
 
+// get a value from the kvlm structure based on the key
+char *kvlm_get(kvlm *kvlm_data, const char *key) {
+    printf("key: %s\n", key);
+    kvlm_entry *entry = kvlm_data->head;
+    while(entry) {
+        if((key == NULL && entry->key == NULL) || (key != NULL && strcmp(key, entry->key) == 0)) {
+            return entry->value;
+        }
+        entry = entry->next;
+    }
+    return NULL;
+}
+
 // free all the memory allocated for the kvlm structure
 void kvlm_free(kvlm *kvlm_data) {
     kvlm_entry *entry = kvlm_data->head;

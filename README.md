@@ -10,7 +10,7 @@
 - [x] cat-file
 - [x] log
 - [ ] tree
-- [ ] tagsp
+- [ ] tags
 - [ ] branch
 - [ ] staging
 - [ ] commit

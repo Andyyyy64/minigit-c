@@ -37,7 +37,7 @@ GitObject *object_read(GitRepository *repo, const char *sha) {
     uLongf decompressed_size = sizeof(raw);
 
     // decompress the data
-    if(uncompress(raw, decompressed_size, (const Bytef *)compressed, fsize) != Z_OK) {
+    if(uncompress(raw, &decompressed_size, (const Bytef *)compressed, fsize) != Z_OK) {
         fprintf(stderr, "Error decompressing file %s\n", path);
         free(compressed);
         return NULL;

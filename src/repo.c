@@ -1,6 +1,9 @@
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 // this is for mkdir(syscall)
 #include <sys/stat.h> 
 #include <errno.h>

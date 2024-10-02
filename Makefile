@@ -2,7 +2,7 @@
 CC = gcc
 
 # compiler flags
-CFLAGS = -Wall -Wextra -std=c11
+CFLAGS = -Wall -Wextra -std=c11 -lc
 
 # soruce files
 SRCS = $(wildcard src/*.c)

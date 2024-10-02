@@ -73,7 +73,7 @@ GitRepository *repo_create(const char *path, int force) {
     return repo;
 }
 
-void cat_file(GitRepository *repo, GitObject *object, const char *fmt) {
+void cat_file(GitRepository *repo, const char *object, const char *fmt) {
     GitObject *obj = malloc(sizeof(GitObject));
     obj = object_read(repo, object_find(repo, object, fmt, 1));
     if(obj == NULL) {
@@ -125,7 +125,7 @@ void cmd_log(GitRepository *repo, const char *sha) {
     GitCommit *commit = commit_read(repo, sha);
     if(commit == NULL) {
         fprintf(stderr, "Error reading commit %s\n", sha);
-        return NULL;
+        return;
     }
     printf("commit %s\n", sha);
     // print author and message
